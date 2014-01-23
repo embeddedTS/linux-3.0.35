@@ -94,8 +94,8 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 	MX6Q_PAD_SD4_DAT6__UART2_CTS,
 
 	/* COM3 - NC on P1 */
-	MX6Q_PAD_SD4_CMD__UART3_TXD,
-	MX6Q_PAD_EIM_D27__UART2_RXD,
+	/*MX6Q_PAD_SD4_CMD__UART3_TXD,
+	MX6Q_PAD_EIM_D27__UART2_RXD,*/
 
 	/* COM4 */
 	MX6Q_PAD_KEY_COL0__UART4_TXD,
@@ -153,7 +153,6 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 	MX6Q_PAD_DI0_PIN15__IPU1_DI0_PIN15,		/* DE */
 	MX6Q_PAD_DI0_PIN2__IPU1_DI0_PIN2,		/* HSync */
 	MX6Q_PAD_DI0_PIN3__IPU1_DI0_PIN3,		/* VSync */
-	MX6Q_PAD_DI0_PIN4__IPU1_DI0_PIN4,		/* Contrast */
 	MX6Q_PAD_DISP0_DAT0__IPU1_DISP0_DAT_0,
 	MX6Q_PAD_DISP0_DAT1__IPU1_DISP0_DAT_1,
 	MX6Q_PAD_DISP0_DAT2__IPU1_DISP0_DAT_2,
@@ -196,7 +195,7 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 	MX6Q_PAD_KEY_ROW3__I2C2_SDA,
 
 	/* FPGA */
-	MX6Q_PAD_GPIO_3__ANATOP_ANATOP_24M_OUT,
+	//MX6Q_PAD_GPIO_3__ANATOP_ANATOP_24M_OUT,
 
 	/* USB */
 	MX6Q_PAD_GPIO_1__USBOTG_ID,
@@ -204,6 +203,7 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 
 	/* GPIO */
 	MX6Q_PAD_GPIO_2__GPIO_1_2, // Red LED
+	MX6Q_PAD_GPIO_3__GPIO_1_3, // Green LED
 	MX6Q_PAD_GPIO_4__GPIO_1_4,
 	MX6Q_PAD_GPIO_5__GPIO_1_5,
 	MX6Q_PAD_GPIO_6__GPIO_1_6,
@@ -255,65 +255,14 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 	MX6Q_PAD_EIM_A17__GPIO_2_21, // OFF_BD_RESET#
 };
 
-#define TS4900_CHARGE_UOK_B	IMX_GPIO_NR(1, 27)
-#define TS4900_USBH1_PWR_EN	IMX_GPIO_NR(1, 29)
-#define TS4900_DISP0_PWR_EN	IMX_GPIO_NR(1, 30)
+#define TS4900_EN_USB_5V 	IMX_GPIO_NR(2, 22)
+#define TS4900_ECSPI1_CS1	IMX_GPIO_NR(3, 19)
 
-#define TS4900_SD3_CD		IMX_GPIO_NR(2, 0)
-#define TS4900_SD3_WP		IMX_GPIO_NR(2, 1)
-#define TS4900_SD2_CD		IMX_GPIO_NR(2, 2)
-#define TS4900_SD2_WP		IMX_GPIO_NR(2, 3)
-#define TS4900_CHARGE_DOK_B	IMX_GPIO_NR(2, 24)
-#define TS4900_GPS_RESET	IMX_GPIO_NR(2, 28)
-#define TS4900_SENSOR_EN	IMX_GPIO_NR(2, 31)
-
-#define TS4900_GPS_EN	IMX_GPIO_NR(3, 0)
-#define TS4900_DISP0_RST_B	IMX_GPIO_NR(3, 8)
-#define TS4900_ALS_INT		IMX_GPIO_NR(3, 9)
-#define TS4900_CHARGE_CHG_2_B	IMX_GPIO_NR(3, 13)
-#define TS4900_CHARGE_FLT_2_B	IMX_GPIO_NR(3, 14)
-#define TS4900_BAR0_INT	IMX_GPIO_NR(3, 15)
-#define TS4900_eCOMPASS_INT	IMX_GPIO_NR(3, 16)
-#define TS4900_GPS_PPS		IMX_GPIO_NR(3, 18)
-#define TS4900_PCIE_PWR_EN	IMX_GPIO_NR(3, 19)
-#define TS4900_USB_OTG_PWR	IMX_GPIO_NR(3, 22)
-#define TS4900_USB_H1_PWR	IMX_GPIO_NR(1, 29)
-#define TS4900_CHARGE_CHG_1_B	IMX_GPIO_NR(3, 23)
-#define TS4900_TS_INT		IMX_GPIO_NR(3, 26)
-#define TS4900_DISP0_RD	IMX_GPIO_NR(3, 28)
-#define TS4900_POWER_OFF	IMX_GPIO_NR(3, 29)
-
-#define TS4900_CAN1_STBY	IMX_GPIO_NR(4, 5)
-#define TS4900_ECSPI1_CS0  IMX_GPIO_NR(4, 9)
-#define TS4900_CODEC_PWR_EN	IMX_GPIO_NR(4, 10)
-#define TS4900_HDMI_CEC_IN	IMX_GPIO_NR(4, 11)
-#define TS4900_PCIE_DIS_B	IMX_GPIO_NR(4, 14)
-
-#define TS4900_DI0_D0_CS	IMX_GPIO_NR(5, 0)
-#define TS4900_CHARGE_FLT_1_B	IMX_GPIO_NR(5, 2)
-#define TS4900_PCIE_WAKE_B	IMX_GPIO_NR(5, 20)
-
-#define TS4900_CAP_TCH_INT1	IMX_GPIO_NR(6, 7)
-#define TS4900_CAP_TCH_INT0	IMX_GPIO_NR(6, 8)
-#define TS4900_DISP_RST_B	IMX_GPIO_NR(6, 11)
-#define TS4900_DISP_PWR_EN	IMX_GPIO_NR(6, 14)
-#define TS4900_CABC_EN0	IMX_GPIO_NR(6, 15)
-#define TS4900_CABC_EN1	IMX_GPIO_NR(6, 16)
-#define TS4900_AUX_3V15_EN	IMX_GPIO_NR(6, 9)
-#define TS4900_DISP0_WR_REVB	IMX_GPIO_NR(6, 9)
-#define TS4900_AUX_5V_EN	IMX_GPIO_NR(6, 10)
-#define TS4900_DI1_D0_CS	IMX_GPIO_NR(6, 31)
-
-#define TS4900_HEADPHONE_DET	IMX_GPIO_NR(7, 8)
-#define TS4900_PCIE_RST_B_REVB	IMX_GPIO_NR(7, 12)
-#define TS4900_PMIC_INT_B	IMX_GPIO_NR(7, 13)
-#define TS4900_PFUZE_INT	IMX_GPIO_NR(7, 13)
-
-#define TS4900_CHARGE_NOW	IMX_GPIO_NR(1, 2)
-#define TS4900_CHARGE_DONE	IMX_GPIO_NR(1, 1)
-#define TS4900_ELAN_CE		IMX_GPIO_NR(2, 18)
-#define TS4900_ELAN_RST	IMX_GPIO_NR(3, 8)
-#define TS4900_ELAN_INT	IMX_GPIO_NR(3, 28)
+#define TS4900_GREEN_LED	IMX_GPIO_NR(1, 3)
+#define TS4900_RED_LED		IMX_GPIO_NR(1, 2)
+#define TS4900_MODE2		IMX_GPIO_NR(2, 26)
+#define TS4900_BD_ID_DATA	IMX_GPIO_NR(2, 25)
+#define TS4900_LCD_3P3_EN	IMX_GPIO_NR(2, 19)
 
 #define IOMUX_OBSRV_MUX1_OFFSET	0x3c
 #define OBSRV_MUX1_MASK			0x3f
@@ -328,25 +277,77 @@ extern char *pu_reg_id;
 extern int epdc_enabled;
 extern bool enet_to_gpio_6;
 
+/* This shifts out the values from a hardwired 8-input lookup
+ * to determine a unique baseboard id. */
+static uint8_t detect_baseboard(void) 
+{
+	uint8_t id = 0;	
+	int i;
+
+	gpio_request(TS4900_RED_LED, "bbid-s0");
+	gpio_request(TS4900_GREEN_LED, "bbid-s1");
+	gpio_request(TS4900_MODE2, "bbid-s2");
+	gpio_request(TS4900_BD_ID_DATA, "bbid-out");
+
+	gpio_direction_output(TS4900_RED_LED, 0);
+	gpio_direction_output(TS4900_GREEN_LED, 0);
+	gpio_direction_output(TS4900_MODE2, 0);
+	gpio_direction_input(TS4900_BD_ID_DATA);
+
+	for(i = 0; i < 8; i++) {
+		int in;
+		if(i & 1) gpio_set_value(TS4900_RED_LED, 1);
+		else gpio_set_value(TS4900_RED_LED, 0);
+
+		if(i & 2) gpio_set_value(TS4900_GREEN_LED, 1);
+		else gpio_set_value(TS4900_GREEN_LED, 0);
+
+		if(i & 4) gpio_set_value(TS4900_MODE2, 1);
+		else gpio_set_value(TS4900_MODE2, 0);
+		
+		mdelay(100); // just for testing, should actually be ok at 2-3us
+
+		in = gpio_get_value(TS4900_BD_ID_DATA);
+		id = (id >> 1);
+		if(in) id |= 0x80;
+	}
+
+	gpio_free(TS4900_RED_LED);
+	gpio_free(TS4900_GREEN_LED);
+	gpio_free(TS4900_MODE2);
+	gpio_free(TS4900_BD_ID_DATA);
+
+	return id;
+}
+
+// wifi
 static const struct esdhc_platform_data mx6q_ts4900_sd1_data __initconst = {
 	.always_present = 1,
 	.keep_power_at_suspend = 1,
 	.support_8bit = 0,
 	.delay_line = 0,
+	.wp_gpio = -EINVAL,
+	.cd_gpio = -EINVAL,
 	.cd_type = ESDHC_CD_PERMANENT,
 };
 
+// SD
 static const struct esdhc_platform_data mx6q_ts4900_sd2_data __initconst = {
 	.keep_power_at_suspend = 1,
 	.support_8bit = 0,
 	.delay_line = 0,
-	.cd_type = ESDHC_CD_PERMANENT,
+	.wp_gpio = -EINVAL,
+	.cd_gpio = -EINVAL,
+	.cd_type = ESDHC_CD_NONE,
 };
 
+// emmc
 static const struct esdhc_platform_data mx6q_ts4900_sd3_data __initconst = {
 	.keep_power_at_suspend = 1,
 	.support_8bit = 0,
 	.delay_line = 0,
+	.wp_gpio = -EINVAL,
+	.cd_gpio = -EINVAL,
 	.cd_type = ESDHC_CD_PERMANENT,
 };
 
@@ -354,6 +355,14 @@ static const struct anatop_thermal_platform_data
 	mx6q_ts4900_anatop_thermal_data __initconst = {
 		.name = "anatop_thermal",
 };
+
+static void imx6q_ts4900_usbotg_vbus(bool on)
+{
+	/*if (on)
+		gpio_set_value(MX6Q_SABRELITE_USB_OTG_PWR, 1);
+	else
+		gpio_set_value(MX6Q_SABRELITE_USB_OTG_PWR, 0);*/
+}
 
 static inline void mx6q_ts4900_init_uart(void)
 {
@@ -366,39 +375,17 @@ static inline void mx6q_ts4900_init_uart(void)
 
 static int mx6q_ts4900_fec_phy_init(struct phy_device *phydev)
 {
-	unsigned short val;
-
-	/* Ar8031 phy SmartEEE feature cause link status generates glitch,
-	 * which cause ethernet link down/up issue, so disable SmartEEE
-	 */
-	phy_write(phydev, 0xd, 0x3);
-	phy_write(phydev, 0xe, 0x805d);
-	phy_write(phydev, 0xd, 0x4003);
-	val = phy_read(phydev, 0xe);
-	val &= ~(0x1 << 8);
-	phy_write(phydev, 0xe, val);
-
-	/* To enable AR8031 ouput a 125MHz clk from CLK_25M */
-	phy_write(phydev, 0xd, 0x7);
-	phy_write(phydev, 0xe, 0x8016);
-	phy_write(phydev, 0xd, 0x4007);
-	val = phy_read(phydev, 0xe);
-
-	val &= 0xffe3;
-	val |= 0x18;
-	phy_write(phydev, 0xe, val);
-
-	/* Introduce tx clock delay */
-	phy_write(phydev, 0x1d, 0x5);
-	val = phy_read(phydev, 0x1e);
-	val |= 0x0100;
-	phy_write(phydev, 0x1e, val);
-
-	/*check phy power*/
-	val = phy_read(phydev, 0x0);
-
-	if (val & BMCR_PDOWN)
-		phy_write(phydev, 0x0, (val & ~BMCR_PDOWN));
+	///* prefer master mode, disable 1000 Base-T capable */
+	//phy_write(phydev, 0x9, 0x1c00);
+//
+	///* min rx data delay */
+	//phy_write(phydev, 0x0b, 0x8105);
+	//phy_write(phydev, 0x0c, 0x0000);
+//
+	///* max rx/tx clock delay, min rx/tx control delay */
+	//phy_write(phydev, 0x0b, 0x8104);
+	//phy_write(phydev, 0x0c, 0xf0f0);
+	//phy_write(phydev, 0x0b, 0x104);
 
 	return 0;
 }
@@ -409,7 +396,7 @@ static struct fec_platform_data fec_data __initdata = {
 };
 
 static int mx6q_ts4900_spi_cs[] = {
-	TS4900_ECSPI1_CS0,
+	TS4900_ECSPI1_CS1,
 };
 
 static const struct spi_imx_master mx6q_ts4900_spi_data __initconst = {
@@ -417,45 +404,19 @@ static const struct spi_imx_master mx6q_ts4900_spi_data __initconst = {
 	.num_chipselect = ARRAY_SIZE(mx6q_ts4900_spi_cs),
 };
 
-#define mV_to_uV(mV) (mV * 1000)
-#define uV_to_mV(uV) (uV / 1000)
-#define V_to_uV(V) (mV_to_uV(V * 1000))
-#define uV_to_V(uV) (uV_to_mV(uV) / 1000)
-
 static struct imxi2c_platform_data mx6q_ts4900_i2c_data = {
 	.bitrate = 100000,
 };
 
 static struct i2c_board_info mxc_i2c0_board_info[] __initdata = {
 	{
-		I2C_BOARD_INFO("wm89**", 0x1a),
+		I2C_BOARD_INFO("isl12022", 0x6f),
 	},
 };
 
 static struct i2c_board_info mxc_i2c1_board_info[] __initdata = {
-	{
-		I2C_BOARD_INFO("mxc_hdmi_i2c", 0x50),
-	},
+	// Audio?
 };
-
-static struct i2c_board_info mxc_i2c2_board_info[] __initdata = {
-};
-
-static void imx6q_ts4900_usbotg_vbus(bool on)
-{
-	if (on)
-		gpio_set_value(TS4900_USB_OTG_PWR, 1);
-	else
-		gpio_set_value(TS4900_USB_OTG_PWR, 0);
-}
-
-static void imx6q_ts4900_host1_vbus(bool on)
-{
-	if (on)
-		gpio_set_value(TS4900_USB_H1_PWR, 1);
-	else
-		gpio_set_value(TS4900_USB_H1_PWR, 0);
-}
 
 static void __init imx6q_ts4900_init_usb(void)
 {
@@ -465,29 +426,18 @@ static void __init imx6q_ts4900_init_usb(void)
 	/* disable external charger detect,
 	 * or it will affect signal quality at dp .
 	 */
-	ret = gpio_request(TS4900_USB_OTG_PWR, "usb-pwr");
+	ret = gpio_request(TS4900_EN_USB_5V, "en-usb-5v");
 	if (ret) {
-		pr_err("failed to get GPIO TS4900_USB_OTG_PWR: %d\n",
+		pr_err("failed to get GPIO TS4900_EN_USB_5V: %d\n",
 			ret);
 		return;
 	}
-	gpio_direction_output(TS4900_USB_OTG_PWR, 0);
-	/* keep USB host1 VBUS always on */
-	ret = gpio_request(TS4900_USB_H1_PWR, "usb-h1-pwr");
-	if (ret) {
-		pr_err("failed to get GPIO TS4900_USB_H1_PWR: %d\n",
-			ret);
-		return;
-	}
-	gpio_direction_output(TS4900_USB_H1_PWR, 0);
-	if (board_is_mx6_reva())
-		mxc_iomux_set_gpr_register(1, 13, 1, 1);
-	else
-		mxc_iomux_set_gpr_register(1, 13, 1, 0);
+	mxc_iomux_set_gpr_register(1, 13, 1, 1);
+	gpio_direction_output(TS4900_EN_USB_5V, 1);
+	gpio_free(TS4900_EN_USB_5V);
 
 	mx6_set_otghost_vbus_func(imx6q_ts4900_usbotg_vbus);
-	mx6_set_host1_vbus_func(imx6q_ts4900_host1_vbus);
-
+	mx6_set_host1_vbus_func(imx6q_ts4900_usbotg_vbus);
 }
 
 /* HW Initialization, if return 0, initialization is successful. */
@@ -575,19 +525,8 @@ static struct ahci_platform_data mx6q_ts4900_sata_data = {
 };
 #endif
 
-static void mx6q_ts4900_flexcan0_switch(int enable)
-{
-	if (enable) {
-		gpio_set_value(TS4900_CAN1_STBY, 1);
-	} else {
-		gpio_set_value(TS4900_CAN1_STBY, 0);
-	}
-}
-
 static const struct flexcan_platform_data
-	mx6q_ts4900_flexcan0_pdata __initconst = {
-	.transceiver_switch = mx6q_ts4900_flexcan0_switch,
-};
+	mx6q_ts4900_flexcan0_pdata __initconst = {};
 
 static struct viv_gpu_platform_data imx6q_gpu_pdata __initdata = {
 	.reserved_mem_size = SZ_128M,
@@ -600,29 +539,9 @@ static struct imx_asrc_platform_data imx_asrc_data = {
 
 static struct ipuv3_fb_platform_data ts4900_fb_data[] = {
 	{ /*fb0*/
-	.disp_dev = "ldb",
-	.interface_pix_fmt = IPU_PIX_FMT_RGB666,
-	.mode_str = "LDB-XGA",
-	.default_bpp = 16,
-	.int_clk = false,
-	.late_init = false,
-	}, {
-	.disp_dev = "ldb",
-	.interface_pix_fmt = IPU_PIX_FMT_RGB666,
-	.mode_str = "LDB-XGA",
-	.default_bpp = 16,
-	.int_clk = false,
-	}, {
 	.disp_dev = "lcd",
-	.interface_pix_fmt = IPU_PIX_FMT_RGB565,
-	.mode_str = "CLAA-WVGA",
-	.default_bpp = 16,
-	.int_clk = false,
-	.late_init = false,
-	}, {
-	.disp_dev = "ldb",
 	.interface_pix_fmt = IPU_PIX_FMT_RGB666,
-	.mode_str = "LDB-VGA",
+	.mode_str = "OKAYA-WVGA",
 	.default_bpp = 16,
 	.int_clk = false,
 	.late_init = false,
@@ -635,41 +554,13 @@ static struct fsl_mxc_lcd_platform_data lcdif_data = {
 	.default_ifmt = IPU_PIX_FMT_RGB565,
 };
 
-static struct fsl_mxc_ldb_platform_data ldb_data = {
-	.ipu_id = 1,
-	.disp_id = 1,
-	.ext_ref = 1,
-	.mode = LDB_SEP1,
-	.sec_ipu_id = 1,
-	.sec_disp_id = 0,
-};
-
 static struct imx_ipuv3_platform_data ipu_data[] = {
 	{
 	.rev = 4,
 	.csi_clk[0] = "clko_clk",
 	.bypass_reset = false,
-	}, {
-	.rev = 4,
-	.csi_clk[0] = "clko_clk",
-	.bypass_reset = false,
 	},
 };
-
-static struct fsl_mxc_capture_platform_data capture_data[] = {
-	{
-		.csi = 0,
-		.ipu = 0,
-		.mclk_source = 0,
-		.is_mipi = 0,
-	}, {
-		.csi = 1,
-		.ipu = 0,
-		.mclk_source = 0,
-		.is_mipi = 1,
-	},
-};
-
 
 struct imx_vout_mem {
 	resource_size_t res_mbase;
@@ -680,23 +571,8 @@ static struct imx_vout_mem vout_mem __initdata = {
 	.res_msize = SZ_128M,
 };
 
-static void ts4900_suspend_enter(void)
-{
-	/* suspend preparation */
-	/* Disable AUX 5V */
-	gpio_set_value(TS4900_AUX_5V_EN, 0);
-}
-
-static void ts4900_suspend_exit(void)
-{
-	/* resume restore */
-	/* Enable AUX 5V */
-	gpio_set_value(TS4900_AUX_5V_EN, 1);
-}
 static const struct pm_platform_data mx6q_ts4900_pm_data __initconst = {
 	.name = "imx_pm",
-	.suspend_enter = ts4900_suspend_enter,
-	.suspend_exit = ts4900_suspend_exit,
 };
 
 static struct regulator_consumer_supply ts4900_vmmc_consumers[] = {
@@ -725,61 +601,10 @@ static struct platform_device ts4900_vmmc_reg_devices = {
 	},
 };
 
-static int __init imx6q_init_audio(void)
-{
-	if (board_is_mx6_reva()) {
-
-	} else {
-
-	}
-
-	return 0;
-}
-
-#ifndef CONFIG_IMX_PCIE
-static void pcie_3v3_power(void)
-{
-	/* disable PCIE_3V3 first */
-	gpio_request(TS4900_PCIE_PWR_EN, "pcie_3v3_en");
-	gpio_direction_output(TS4900_PCIE_PWR_EN, 0);
-	mdelay(10);
-	/* enable PCIE_3V3 again */
-	gpio_set_value(TS4900_PCIE_PWR_EN, 1);
-	gpio_free(TS4900_PCIE_PWR_EN);
-}
-
-static void pcie_3v3_reset(void)
-{
-	/* reset miniPCIe */
-	gpio_request(TS4900_PCIE_RST_B_REVB, "pcie_reset_rebB");
-	gpio_direction_output(TS4900_PCIE_RST_B_REVB, 0);
-	/* The PCI Express Mini CEM specification states that PREST# is
-	deasserted minimum 1ms after 3.3vVaux has been applied and stable*/
-	mdelay(1);
-	gpio_set_value(TS4900_PCIE_RST_B_REVB, 1);
-	gpio_free(TS4900_PCIE_RST_B_REVB);
-}
-#endif
-
-static void gps_power_on(bool on)
-{
-	/* Enable/disable aux_3v15 */
-	gpio_request(TS4900_AUX_3V15_EN, "aux_3v15_en");
-	gpio_direction_output(TS4900_AUX_3V15_EN, 1);
-	gpio_set_value(TS4900_AUX_3V15_EN, on);
-	gpio_free(TS4900_AUX_3V15_EN);
-	/*Enable/disable gps_en*/
-	gpio_request(TS4900_GPS_EN, "gps_en");
-	gpio_direction_output(TS4900_GPS_EN, 1);
-	gpio_set_value(TS4900_GPS_EN, on);
-	gpio_free(TS4900_GPS_EN);
-
-}
-
-static struct platform_pwm_backlight_data mx6_ts4900_pwm_backlight_data = {
-	.pwm_id = 0,
+static struct platform_pwm_backlight_data mx6_ts4900_pwm3_backlight_data = {
+	.pwm_id = 2,
 	.max_brightness = 248,
-	.dft_brightness = 128,
+	.dft_brightness = 248,
 	.pwm_period_ns = 50000,
 };
 
@@ -826,10 +651,6 @@ static void mx6_snvs_poweroff(void)
 }
 
 static const struct imx_pcie_platform_data mx6_ts4900_pcie_data __initconst = {
-	.pcie_pwr_en	= TS4900_PCIE_PWR_EN,
-	.pcie_rst	= TS4900_PCIE_RST_B_REVB,
-	.pcie_wake_up	= TS4900_PCIE_WAKE_B,
-	.pcie_dis	= TS4900_PCIE_DIS_B,
 #ifdef CONFIG_IMX_PCIE_EP_MODE_IN_EP_RC_SYS
 	.type_ep	= 1,
 #else
@@ -842,12 +663,11 @@ static const struct imx_pcie_platform_data mx6_ts4900_pcie_data __initconst = {
  */
 static void __init ts4900_board_init(void)
 {
-	int i;
-	int ret;
 	struct clk *clko, *clko2;
 	struct clk *new_parent;
 	int rate;
 	struct platform_device *voutdev;
+	uint8_t baseboardid;
 
 	if (cpu_is_mx6q()) {
 		mxc_iomux_v3_setup_multiple_pads(mx6q_ts4900_pads,
@@ -855,7 +675,6 @@ static void __init ts4900_board_init(void)
 	} else if (cpu_is_mx6dl()) {
 		// todo
 	}
-
 
 #ifdef CONFIG_FEC_1588
 	/* Set GPIO_16 input for IEEE-1588 ts_clk and RMII reference clock
@@ -870,30 +689,23 @@ static void __init ts4900_board_init(void)
 	soc_reg_id = ts4900_dvfscore_data.soc_id;
 	mx6q_ts4900_init_uart();
 
-	/*
-	 * MX6DL/Solo only supports single IPU
-	 * The following codes are used to change ipu id
-	 * and display id information for MX6DL/Solo. Then
-	 * register 1 IPU device and up to 2 displays for
-	 * MX6DL/Solo
-	 */
-	if (cpu_is_mx6dl()) {
-		ldb_data.ipu_id = 0;
-		ldb_data.sec_ipu_id = 0;
+	baseboardid = detect_baseboard();
+	printk(KERN_INFO "Baseboard ID: 0x%X\n", baseboardid);
+	printk(KERN_INFO "Rev: %c\n", 'A' + ((baseboardid & 0xc0) >> 6));
+
+	if((baseboardid & ~0xc0) == 0x2)
+	{
+		printk(KERN_INFO "Baseboard: TS-8390\n");
+
+		imx6q_add_lcdif(&lcdif_data);
+		imx6q_add_ipuv3(0, &ipu_data[0]);
+		imx6q_add_ipuv3fb(0, &ts4900_fb_data[0]);
+		// Enable LCD power
+		gpio_request(TS4900_LCD_3P3_EN, "lcd-3p3-en");
+		gpio_direction_output(TS4900_LCD_3P3_EN, 1);
 	}
 
-	imx6q_add_ipuv3(0, &ipu_data[0]);
-	if (cpu_is_mx6q()) {
-		imx6q_add_ipuv3(1, &ipu_data[1]);
-		for (i = 0; i < 4 && i < ARRAY_SIZE(ts4900_fb_data); i++)
-			imx6q_add_ipuv3fb(i, &ts4900_fb_data[i]);
-	} else
-		for (i = 0; i < 2 && i < ARRAY_SIZE(ts4900_fb_data); i++)
-			imx6q_add_ipuv3fb(i, &ts4900_fb_data[i]);
-
 	imx6q_add_vdoa();
-	imx6q_add_lcdif(&lcdif_data);
-	imx6q_add_ldb(&ldb_data);
 	voutdev = imx6q_add_v4l2_output(0);
 	if (vout_mem.res_msize && voutdev) {
 		dma_declare_coherent_memory(&voutdev->dev,
@@ -904,9 +716,9 @@ static void __init ts4900_board_init(void)
 					     DMA_MEMORY_EXCLUSIVE));
 	}
 
-	imx6q_add_v4l2_capture(0, &capture_data[0]);
-	imx6q_add_v4l2_capture(1, &capture_data[1]);
-	imx6q_add_imx_snvs_rtc();
+	// We use the ISL2022 on i2c instead of the integrated rtc
+	// due to the high power draw
+	//imx6q_add_imx_snvs_rtc();
 
 	if (1 == caam_enabled)
 		imx6q_add_imx_caam();
@@ -914,22 +726,10 @@ static void __init ts4900_board_init(void)
 	imx6q_add_imx_i2c(0, &mx6q_ts4900_i2c_data);
 	imx6q_add_imx_i2c(1, &mx6q_ts4900_i2c_data);
 	imx6q_add_imx_i2c(2, &mx6q_ts4900_i2c_data);
-	if (cpu_is_mx6dl())
-		imx6q_add_imx_i2c(3, &mx6q_ts4900_i2c_data);
 	i2c_register_board_info(0, mxc_i2c0_board_info,
 			ARRAY_SIZE(mxc_i2c0_board_info));
 	i2c_register_board_info(1, mxc_i2c1_board_info,
 			ARRAY_SIZE(mxc_i2c1_board_info));
-	i2c_register_board_info(2, mxc_i2c2_board_info,
-			ARRAY_SIZE(mxc_i2c2_board_info));
-	ret = gpio_request(TS4900_PFUZE_INT, "pFUZE-int");
-	if (ret) {
-		printk(KERN_ERR"request pFUZE-int error!!\n");
-		return;
-	} else {
-		gpio_direction_input(TS4900_PFUZE_INT);
-		//mx6q_ts4900_init_pfuze100(TS4900_PFUZE_INT);
-	}
 
 	imx6q_add_anatop_thermal_imx(1, &mx6q_ts4900_anatop_thermal_data);
 
@@ -948,8 +748,8 @@ static void __init ts4900_board_init(void)
 	/* Move sd4 to first because sd4 connect to emmc.
 	   Mfgtools want emmc is mmcblk0 and other sd card is mmcblk1.
 	*/
-	imx6q_add_sdhci_usdhc_imx(2, &mx6q_ts4900_sd3_data); // emmc
 	imx6q_add_sdhci_usdhc_imx(1, &mx6q_ts4900_sd2_data); // sd
+	imx6q_add_sdhci_usdhc_imx(2, &mx6q_ts4900_sd3_data); // emmc
 	imx6q_add_sdhci_usdhc_imx(0, &mx6q_ts4900_sd1_data); // wifi
 	imx_add_viv_gpu(&imx6_gpu_data, &imx6q_gpu_pdata);
 	imx6q_ts4900_init_usb();
@@ -963,28 +763,17 @@ static void __init ts4900_board_init(void)
 #endif
 	}
 	imx6q_add_vpu();
-	imx6q_init_audio();
+	//imx6q_init_audio();
 	platform_device_register(&ts4900_vmmc_reg_devices);
 	imx_asrc_data.asrc_core_clk = clk_get(NULL, "asrc_clk");
 	imx_asrc_data.asrc_audio_clk = clk_get(NULL, "asrc_serial_clk");
 	imx6q_add_asrc(&imx_asrc_data);
 
-	/*
-	 * Disable HannStar touch panel CABC function,
-	 * this function turns the panel's backlight automatically
-	 * according to the content shown on the panel which
-	 * may cause annoying unstable backlight issue.
-	 */
-	gpio_request(TS4900_CABC_EN0, "cabc-en0");
-	gpio_direction_output(TS4900_CABC_EN0, 0);
-	gpio_request(TS4900_CABC_EN1, "cabc-en1");
-	gpio_direction_output(TS4900_CABC_EN1, 0);
-
 	imx6q_add_mxc_pwm(0);
 	imx6q_add_mxc_pwm(1);
 	imx6q_add_mxc_pwm(2);
 	imx6q_add_mxc_pwm(3);
-	imx6q_add_mxc_pwm_backlight(0, &mx6_ts4900_pwm_backlight_data);
+	imx6q_add_mxc_pwm_backlight(2, &mx6_ts4900_pwm3_backlight_data);
 
 	imx6q_add_otp();
 	imx6q_add_viim();
@@ -992,17 +781,6 @@ static void __init ts4900_board_init(void)
 	imx6q_add_dma();
 
 	imx6q_add_dvfs_core(&ts4900_dvfscore_data);
-
-	/* enable sensor 3v3 and 1v8 */
-	gpio_request(TS4900_SENSOR_EN, "sensor-en");
-	gpio_direction_output(TS4900_SENSOR_EN, 1);
-
-	/* enable ecompass intr */
-	gpio_request(TS4900_eCOMPASS_INT, "ecompass-int");
-	gpio_direction_input(TS4900_eCOMPASS_INT);
-	/* enable light sensor intr */
-	gpio_request(TS4900_ALS_INT, "als-int");
-	gpio_direction_input(TS4900_ALS_INT);
 
 	if (cpu_is_mx6dl()) {
 		/*imx6dl_add_imx_pxp();
@@ -1035,19 +813,6 @@ static void __init ts4900_board_init(void)
 	if (!IS_ERR(clko))
 		clk_set_parent(clko, clko2);
 
-	/* Enable Aux_5V */
-	gpio_request(TS4900_AUX_5V_EN, "aux_5v_en");
-	gpio_direction_output(TS4900_AUX_5V_EN, 1);
-	gpio_set_value(TS4900_AUX_5V_EN, 1);
-
-#ifndef CONFIG_IMX_PCIE
-	/* enable pcie 3v3 power without pcie driver */
-	pcie_3v3_power();
-	mdelay(10);
-	pcie_3v3_reset();
-#endif
-
-	gps_power_on(true);
 	/* Register charger chips */
 	pm_power_off = mx6_snvs_poweroff;
 	imx6q_add_busfreq();
@@ -1063,6 +828,14 @@ static void __init ts4900_board_init(void)
 	imx6q_add_perfmon(0);
 	imx6q_add_perfmon(1);
 	imx6q_add_perfmon(2);
+
+	// Default to green on, red off
+	gpio_request(TS4900_GREEN_LED, "status-led");
+	gpio_request(TS4900_RED_LED, "status-led");
+	gpio_direction_output(TS4900_RED_LED, 0);
+	gpio_direction_output(TS4900_GREEN_LED, 1);
+	gpio_free(TS4900_RED_LED);
+	gpio_free(TS4900_GREEN_LED);
 }
 
 extern void __iomem *twd_base;
