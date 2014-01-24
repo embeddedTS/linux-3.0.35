@@ -56,9 +56,13 @@ config FB_MXC_SEIKO_WVGA_SYNC_PANEL
 	depends on FB_MXC_SYNC_PANEL
 	tristate "SEIKO WVGA Panel"
 
-config FB_MXC_Okaya_WVGA_SYNC_PANEL
+config FB_MXC_OKAYA_WVGA_SYNC_PANEL
 	depends on FB_MXC_SYNC_PANEL
 	tristate "Okaya WVGA Panel"
+
+config FB_MXC_HANTRONIX_SVGA_SYNC_PANEL
+	depends on FB_MXC_SYNC_PANEL
+	tristate "Hantronix SVGA Panel"
 
 config FB_MXC_SII902X
 	depends on FB_MXC_SYNC_PANEL && I2C

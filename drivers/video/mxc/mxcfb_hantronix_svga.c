@@ -30,14 +30,22 @@
 static struct platform_device *plcd_dev;
 static struct regulator *io_reg;
 static struct regulator *core_reg;
-static int lcd_on;
 
 static struct fb_videomode video_modes[] = {
 	{
-	 "OKAYA-WVGA", 60, 800, 480, 30066, 50, 70, 0, 0, 50, 50, 
-	 FB_SYNC_VERT_HIGH_ACT | FB_SYNC_HOR_HIGH_ACT,
-	 FB_VMODE_NONINTERLACED,
-	 0,},
+		.name           = "HANTRONIX-SVGA",
+		.pixclock       = 25000,   /* tLVCP Typ: 25ns */
+		.refresh        = 60,
+		.xres           = 800,
+		.yres           = 600,
+		.hsync_len      = 50,
+		.left_margin    = 50,
+		.right_margin   = 70,
+		.vsync_len      = 50,
+		.upper_margin   = 0,
+		.lower_margin   = 0,
+		.sync           = FB_SYNC_VERT_HIGH_ACT | FB_SYNC_HOR_HIGH_ACT,
+	},
 };
 
 static void lcd_init_fb(struct fb_info *info)
@@ -82,7 +90,6 @@ static struct notifier_block nb = {
 static int __devinit lcd_probe(struct platform_device *pdev)
 {
 	int i;
-	struct fsl_mxc_lcd_platform_data *plat = pdev->dev.platform_data;
 
 	for (i = 0; i < num_registered_fb; i++) {
 		if (strcmp(registered_fb[i]->fix.id, "mxc_elcdif_fb") == 0) {

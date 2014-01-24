@@ -11,16 +11,14 @@
 #include <linux/platform_device.h>
 #include <linux/fsl_devices.h>
 #include <linux/spi/spi.h>
+#include <linux/spi/spi_gpio.h>
 #include <linux/spi/flash.h>
 #include <linux/i2c.h>
-#include <linux/i2c/pca953x.h>
 #include <linux/ata.h>
 #include <linux/mtd/mtd.h>
 #include <linux/mtd/map.h>
 #include <linux/mtd/partitions.h>
 #include <linux/regulator/consumer.h>
-#include <linux/pmic_external.h>
-#include <linux/pmic_status.h>
 #include <linux/ipu.h>
 #include <linux/mxcfb.h>
 #include <linux/pwm_backlight.h>
@@ -32,8 +30,7 @@
 #include <linux/regulator/consumer.h>
 #include <linux/regulator/machine.h>
 #include <linux/regulator/fixed.h>
-#include <sound/wm8962.h>
-#include <linux/mfd/mxc-hdmi-core.h>
+#include <linux/spi/ads7846.h>
 
 #include <mach/common.h>
 #include <mach/hardware.h>
@@ -144,7 +141,7 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 	MX6Q_PAD_RGMII_RD3__ENET_RGMII_RD3,
 	MX6Q_PAD_RGMII_RX_CTL__ENET_RGMII_RX_CTL,
 	MX6Q_PAD_ENET_TX_EN__GPIO_1_28,		/* RGMII Interrupt */
-	MX6Q_PAD_DI0_PIN4__GPIO_4_20,		/* RGMII reset */
+	//MX6Q_PAD_DI0_PIN4__GPIO_4_20,		/* RGMII reset */
 
 	/* DISPLAY */
 	MX6Q_PAD_EIM_A19__GPIO_2_19, /* EN_LCD_3.3V */
@@ -264,6 +261,12 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 #define TS4900_BD_ID_DATA	IMX_GPIO_NR(2, 25)
 #define TS4900_LCD_3P3_EN	IMX_GPIO_NR(2, 19)
 
+#define TS8390_SPI_CLK		IMX_GPIO_NR(3, 15)
+#define TS8390_SPI_MOSI		IMX_GPIO_NR(3, 14)
+#define TS8390_SPI_MISO		IMX_GPIO_NR(3, 13)
+#define TS8390_SPI_CSN		IMX_GPIO_NR(3, 12)
+#define TS8390_PENDOWN 		IMX_GPIO_NR(3, 11)
+
 #define IOMUX_OBSRV_MUX1_OFFSET	0x3c
 #define OBSRV_MUX1_MASK			0x3f
 #define OBSRV_MUX1_ENET_IRQ		0x9
@@ -305,7 +308,7 @@ static uint8_t detect_baseboard(void)
 		if(i & 4) gpio_set_value(TS4900_MODE2, 1);
 		else gpio_set_value(TS4900_MODE2, 0);
 		
-		mdelay(100); // just for testing, should actually be ok at 2-3us
+		udelay(10); // just for testing, should actually be ok at 2-3us
 
 		in = gpio_get_value(TS4900_BD_ID_DATA);
 		id = (id >> 1);
@@ -538,11 +541,18 @@ static struct imx_asrc_platform_data imx_asrc_data = {
 };
 
 static struct ipuv3_fb_platform_data ts4900_fb_data[] = {
-	{ /*fb0*/
+	{
 	.disp_dev = "lcd",
-	.interface_pix_fmt = IPU_PIX_FMT_RGB666,
+	.interface_pix_fmt = IPU_PIX_FMT_RGB24,
 	.mode_str = "OKAYA-WVGA",
-	.default_bpp = 16,
+	.default_bpp = 24,
+	.int_clk = false,
+	.late_init = false,
+	},{
+	.disp_dev = "lcd",
+	.interface_pix_fmt = IPU_PIX_FMT_RGB24,
+	.mode_str = "HANTRONIX-SVGA",
+	.default_bpp = 24,
 	.int_clk = false,
 	.late_init = false,
 	},
@@ -551,7 +561,7 @@ static struct ipuv3_fb_platform_data ts4900_fb_data[] = {
 static struct fsl_mxc_lcd_platform_data lcdif_data = {
 	.ipu_id = 0,
 	.disp_id = 0,
-	.default_ifmt = IPU_PIX_FMT_RGB565,
+	.default_ifmt = IPU_PIX_FMT_RGB24,
 };
 
 static struct imx_ipuv3_platform_data ipu_data[] = {
@@ -559,6 +569,51 @@ static struct imx_ipuv3_platform_data ipu_data[] = {
 	.rev = 4,
 	.csi_clk[0] = "clko_clk",
 	.bypass_reset = false,
+	},
+};
+
+/*
+static int ads7846_get_pendown_state(void)
+{
+	return !gpio_get_value(TS8390_PENDOWN);
+}*/
+
+static struct ads7846_platform_data ts8390_ads7846_platform_data __initdata = {
+	.x_min      = 0x57,
+	.x_max		= 0xf1b,
+	.x_min		= 0x81,
+	.y_max		= 0xf08,
+	.x_plate_ohms	= 180,
+	.pressure_max	= 255,
+	.debounce_max	= 10,
+	.debounce_tol	= 3,
+	.debounce_rep	= 1,
+	.gpio_pendown	= TS8390_PENDOWN,
+	//.get_pendown_state	= ads7846_get_pendown_state,
+};
+
+struct spi_gpio_platform_data ts8390_spi_pdata = {
+	.sck		= TS8390_SPI_CLK,
+	.mosi		= TS8390_SPI_MOSI,
+	.miso		= TS8390_SPI_MISO,
+	.num_chipselect	= 1,
+};
+
+static struct platform_device ts8390_spi_pdevice = {
+	.name	= "spi_gpio",
+	.id	= 1,
+	.dev 	= {
+		.platform_data	= &ts8390_spi_pdata,
+	}
+};
+
+static struct spi_board_info ts8390_spi_devices[] __initdata = {
+	{
+		.modalias       = "ads7846",
+		.max_speed_hz   = 1000,
+		.bus_num        = 1,
+		.platform_data  = &ts8390_ads7846_platform_data,
+		.irq            = gpio_to_irq(TS8390_PENDOWN),
 	},
 };
 
@@ -666,15 +721,10 @@ static void __init ts4900_board_init(void)
 	struct clk *clko, *clko2;
 	struct clk *new_parent;
 	int rate;
-	struct platform_device *voutdev;
 	uint8_t baseboardid;
 
-	if (cpu_is_mx6q()) {
-		mxc_iomux_v3_setup_multiple_pads(mx6q_ts4900_pads,
-			ARRAY_SIZE(mx6q_ts4900_pads));
-	} else if (cpu_is_mx6dl()) {
-		// todo
-	}
+	mxc_iomux_v3_setup_multiple_pads(mx6q_ts4900_pads,
+		ARRAY_SIZE(mx6q_ts4900_pads));
 
 #ifdef CONFIG_FEC_1588
 	/* Set GPIO_16 input for IEEE-1588 ts_clk and RMII reference clock
@@ -693,32 +743,35 @@ static void __init ts4900_board_init(void)
 	printk(KERN_INFO "Baseboard ID: 0x%X\n", baseboardid);
 	printk(KERN_INFO "Rev: %c\n", 'A' + ((baseboardid & 0xc0) >> 6));
 
+	imx6q_add_vdoa();
 	if((baseboardid & ~0xc0) == 0x2)
 	{
 		printk(KERN_INFO "Baseboard: TS-8390\n");
 
 		imx6q_add_lcdif(&lcdif_data);
 		imx6q_add_ipuv3(0, &ipu_data[0]);
+		imx6q_add_ipuv3(1, &ipu_data[0]);
 		imx6q_add_ipuv3fb(0, &ts4900_fb_data[0]);
 		// Enable LCD power
 		gpio_request(TS4900_LCD_3P3_EN, "lcd-3p3-en");
 		gpio_direction_output(TS4900_LCD_3P3_EN, 1);
-	}
 
-	imx6q_add_vdoa();
-	voutdev = imx6q_add_v4l2_output(0);
-	if (vout_mem.res_msize && voutdev) {
-		dma_declare_coherent_memory(&voutdev->dev,
-					    vout_mem.res_mbase,
-					    vout_mem.res_mbase,
-					    vout_mem.res_msize,
-					    (DMA_MEMORY_MAP |
-					     DMA_MEMORY_EXCLUSIVE));
-	}
+		// Add SPI GPIO/ads7846 for touchscreen
+		platform_device_register(&ts8390_spi_pdevice);
+		spi_register_board_info(ts8390_spi_devices,
+			ARRAY_SIZE(ts8390_spi_devices));
+	} else if ((baseboardid & ~0xc0) == 0xa)
+	{
+		printk(KERN_INFO "Baseboard: TS-8900\n");
 
-	// We use the ISL2022 on i2c instead of the integrated rtc
-	// due to the high power draw
-	//imx6q_add_imx_snvs_rtc();
+		imx6q_add_lcdif(&lcdif_data);
+		imx6q_add_ipuv3(0, &ipu_data[0]);
+		imx6q_add_ipuv3(1, &ipu_data[0]);
+		imx6q_add_ipuv3fb(0, &ts4900_fb_data[1]);
+		// Enable LCD power
+		gpio_request(TS4900_LCD_3P3_EN, "lcd-3p3-en");
+		gpio_direction_output(TS4900_LCD_3P3_EN, 1);
+	}
 
 	if (1 == caam_enabled)
 		imx6q_add_imx_caam();
@@ -782,10 +835,6 @@ static void __init ts4900_board_init(void)
 
 	imx6q_add_dvfs_core(&ts4900_dvfscore_data);
 
-	if (cpu_is_mx6dl()) {
-		/*imx6dl_add_imx_pxp();
-		imx6dl_add_imx_pxp_client();*/
-	}
 	/*
 	ret = gpio_request_array(mx6q_ts4900_flexcan_gpios,
 			ARRAY_SIZE(mx6q_ts4900_flexcan_gpios));
