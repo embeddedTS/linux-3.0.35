@@ -242,11 +242,11 @@ static iomux_v3_cfg_t mx6q_ts4900_pads[] = {
 	MX6Q_PAD_EIM_DA8__GPIO_3_8,
 	MX6Q_PAD_EIM_DA9__GPIO_3_9,
 	MX6Q_PAD_EIM_DA10__GPIO_3_10,
-	MX6Q_PAD_EIM_DA11__GPIO_3_11,
-	MX6Q_PAD_EIM_DA12__GPIO_3_12,
-	MX6Q_PAD_EIM_DA13__GPIO_3_13,
-	MX6Q_PAD_EIM_DA14__GPIO_3_14,
-	MX6Q_PAD_EIM_DA15__GPIO_3_15,
+	MX6Q_PAD_EIM_DA11__GPIO_3_11,   /* AD7843 PENIRQ */
+	MX6Q_PAD_EIM_DA12__GPIO_3_12,   /* AD7843 CS# */
+	MX6Q_PAD_EIM_DA13__GPIO_3_13,   /* AD7843 DOUT (MISO) */
+	MX6Q_PAD_EIM_DA14__GPIO_3_14,   /* AD7843 DIN (MOSI) */
+	MX6Q_PAD_EIM_DA15__GPIO_3_15,   /* AD7843 CLK */
 
 	/* Other */
 	MX6Q_PAD_EIM_A17__GPIO_2_21, // OFF_BD_RESET#
@@ -544,10 +544,10 @@ static struct ipuv3_fb_platform_data ts4900_fb_data[] = {
 	{
 	.disp_dev = "lcd",
 	.interface_pix_fmt = IPU_PIX_FMT_RGB24,
-	.mode_str = "OKAYA-WVGA",
+	.mode_str = "800x480M-16@60", 
 	.default_bpp = 24,
 	.int_clk = false,
-	.late_init = false,
+	.late_init = false,				
 	},{
 	.disp_dev = "lcd",
 	.interface_pix_fmt = IPU_PIX_FMT_RGB24,
@@ -579,16 +579,21 @@ static int ads7846_get_pendown_state(void)
 }*/
 
 static struct ads7846_platform_data ts8390_ads7846_platform_data __initdata = {
-	.x_min      = 0x57,
-	.x_max		= 0xf1b,
-	.x_min		= 0x81,
-	.y_max		= 0xf08,
-	.x_plate_ohms	= 180,
+   
+   .model      = 7843,
+	.x_min			= 150,
+	.x_max			= 3830,
+	.y_min			= 190,
+	.y_max			= 3830,
+	.x_plate_ohms		= 400,
+	.y_plate_ohms		= 400,	
+	.vref_delay_usecs	= 100,
 	.pressure_max	= 255,
-	.debounce_max	= 10,
-	.debounce_tol	= 3,
-	.debounce_rep	= 1,
+	.debounce_max	= 20,
+	.debounce_tol	= 6,
+	.debounce_rep	= 3,
 	.gpio_pendown	= TS8390_PENDOWN,
+	
 	//.get_pendown_state	= ads7846_get_pendown_state,
 };
 
@@ -614,8 +619,10 @@ static struct spi_board_info ts8390_spi_devices[] __initdata = {
 		.bus_num        = 1,
 		.platform_data  = &ts8390_ads7846_platform_data,
 		.irq            = gpio_to_irq(TS8390_PENDOWN),
+		.controller_data = (void*)TS8390_SPI_CSN,
 	},
 };
+
 
 struct imx_vout_mem {
 	resource_size_t res_mbase;
@@ -648,13 +655,40 @@ static struct fixed_voltage_config ts4900_vmmc_reg_config = {
 	.init_data		= &ts4900_vmmc_init,
 };
 
-static struct platform_device ts4900_vmmc_reg_devices = {
-	.name	= "reg-fixed-voltage",
-	.id	= 3,
-	.dev	= {
-		.platform_data = &ts4900_vmmc_reg_config,
-	},
+
+static struct regulator_consumer_supply ts4900_vcc_consumers[] = {	
+	REGULATOR_SUPPLY("vcc", "spi1.0"),
 };
+
+static struct regulator_init_data ts4900_vcc_init = {   
+	.num_consumer_supplies = ARRAY_SIZE(ts4900_vcc_consumers),
+	.consumer_supplies = ts4900_vcc_consumers,
+};
+
+static struct fixed_voltage_config ts4900_vcc_reg_config = {
+	.supply_name		= "vcc",
+	.microvolts		= 3300000,
+	.gpio			= -1,
+	.init_data		= &ts4900_vcc_init,
+};
+
+
+static struct platform_device ts4900_vmmc_reg_devices[] = {
+   {   
+      .name	= "reg-fixed-voltage",
+      .id	= 3,
+      .dev	= {
+         .platform_data = &ts4900_vmmc_reg_config,
+      }
+   }, {   
+      .name	= "reg-fixed-voltage",
+      .id	= 4,
+      .dev	= {
+         .platform_data = &ts4900_vcc_reg_config,
+      }
+   },
+};
+
 
 static struct platform_pwm_backlight_data mx6_ts4900_pwm3_backlight_data = {
 	.pwm_id = 2,
@@ -735,6 +769,9 @@ static void __init ts4900_board_init(void)
 	 mxc_iomux_set_gpr_register(1, 21, 1, 1);
 #endif
 
+
+   
+
 	gp_reg_id = ts4900_dvfscore_data.reg_id;
 	soc_reg_id = ts4900_dvfscore_data.soc_id;
 	mx6q_ts4900_init_uart();
@@ -745,17 +782,19 @@ static void __init ts4900_board_init(void)
 
 	imx6q_add_vdoa();
 	if((baseboardid & ~0xc0) == 0x2)
-	{
+	{	   
 		printk(KERN_INFO "Baseboard: TS-8390\n");
 
-		imx6q_add_lcdif(&lcdif_data);
-		imx6q_add_ipuv3(0, &ipu_data[0]);
-		imx6q_add_ipuv3(1, &ipu_data[0]);
-		imx6q_add_ipuv3fb(0, &ts4900_fb_data[0]);
+		
 		// Enable LCD power
 		gpio_request(TS4900_LCD_3P3_EN, "lcd-3p3-en");
 		gpio_direction_output(TS4900_LCD_3P3_EN, 1);
 
+		imx6q_add_ipuv3(0, &ipu_data[0]);
+		//imx6q_add_ipuv3(1, &ipu_data[0]);
+		imx6q_add_ipuv3fb(0, &ts4900_fb_data[0]);
+		imx6q_add_lcdif(&lcdif_data);
+					
 		// Add SPI GPIO/ads7846 for touchscreen
 		platform_device_register(&ts8390_spi_pdevice);
 		spi_register_board_info(ts8390_spi_devices,
@@ -817,7 +856,8 @@ static void __init ts4900_board_init(void)
 	}
 	imx6q_add_vpu();
 	//imx6q_init_audio();
-	platform_device_register(&ts4900_vmmc_reg_devices);
+	platform_device_register(&ts4900_vmmc_reg_devices[0]);
+	platform_device_register(&ts4900_vmmc_reg_devices[1]);
 	imx_asrc_data.asrc_core_clk = clk_get(NULL, "asrc_clk");
 	imx_asrc_data.asrc_audio_clk = clk_get(NULL, "asrc_serial_clk");
 	imx6q_add_asrc(&imx_asrc_data);
