@@ -970,7 +970,7 @@ static void __init ts4900_reserve(void)
  * initialize __mach_desc_MX6Q_TS4900 data structure.
  */
 MACHINE_START(TS4900, "Freescale i.MX 6Quad TS-4900 Board")
-	/* Maintainer: Technologic Systems */
+	/* Maintainer: embeddedTS */
 	.boot_params = MX6_PHYS_OFFSET + 0x100,
 	.map_io = mx6_map_io,
 	.init_irq = mx6_init_irq,

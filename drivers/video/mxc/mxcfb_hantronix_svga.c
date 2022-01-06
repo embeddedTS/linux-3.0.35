@@ -139,6 +139,6 @@ static void __exit okaya_wvga_lcd_exit(void)
 module_init(okaya_wvga_lcd_init);
 module_exit(okaya_wvga_lcd_exit);
 
-MODULE_AUTHOR("Technologic Ssytems");
+MODULE_AUTHOR("embeddedTS");
 MODULE_DESCRIPTION("Okaya WVGA LCD init driver");
 MODULE_LICENSE("GPL");
